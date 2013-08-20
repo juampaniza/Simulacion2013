@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="static/jquery.mobile-1.3.2.min.css">
+	<script type="text/javascript" src="static/jquery-1.10.2.js"></script>
+	<script type="text/javascript" src="static/jquery.mobile-1.3.2.js"></script>
+    <script type="text/javascript" src="static/knockout-2.2.1.js"></script>
+    <script type="text/javascript" src="static/globalize.js"></script>
+    <script type="text/javascript" src="static/dx.chartjs.js"></script>
+</head>
+<body>
+	<div data-role="page" id="puntoa">
+		<div data-role="header" data-theme="b"><h1>Trabajo Practico N1</h1><div data-role="navbar">
+        <ul>
+            <li><a href="#puntoa">Punto A</a></li>
+            <li><a href="#puntob">Punto B</a></li>
+            <li><a href="#puntoc">Punto C</a></li>
+        </ul></div></div>
+		<div data-role="content">
+			<div class="ui-grid-a ui-responsive">	
+				<div class="ui-block-a">
+					<div class="ui-grid-solo">
+		    			<div class="fieldcontain">
+							<label for="metodos">Elige un metodo:</label>
+							<select name="metodos" id="metodos" data-role="slider">
+								<option value="mixto">Mixto</option>
+								<option value="multiplicativo">Multiplicativo</option>
+							</select>
+						</div>
+		    			
+					</div>
+					
+					<div class="ui-grid-a ui-responsive">
+						<div class="ui-block-a">
+							<div class="ui-body ui-body-d">
+								<div data-role="fieldcontain">
+									<label for="a">a:</label><input type="text" name="a" id="a" value=""/>
+									<label for="b" class="b">b:</label><input type="text" name="b" id="b" value=""/>
+								</div>
+							</div>
+						</div>
+						<div class="ui-block-b">
+							<div class="ui-body ui-body-d" >
+								<div data-role="fieldcontain">
+									<label for="x">Semilla:</label><input type="text" name="x" id="x" value=""/>
+									<label for="m">M:</label><input type="text" name="m" id="m" value=""/>
+								</div>
+							</div>
+						</div>
+					</div>
+						
+					<div class="ui-grid-solo">
+		   				<div id="generar" data-role="button" data-theme="b">Generar</div>
+					</div>
+				</div>	
+				<div class="ui-block-b">
+					<textarea data-mini="true" id="textarea"></textarea>
+					<div data-role="button" id="agregar" data-theme="b">proximo</div>
+				</div>
+			</div>		
+		</div>
+		<div data-role="footer" data-theme="a"><h4>Simulacion 2013</h4></div>
+	</div>
+	<div id="puntob" data-role="page">
+		<div data-role="header" data-theme="b"><h3>Trabajo Practico N1</h3><div data-role="navbar">
+        <ul>
+            <li><a href="#puntoa">Punto A</a></li>
+            <li><a href="#puntob">Punto B</a></li>
+            <li><a href="#puntoc">Punto C</a></li>
+        </ul></div>
+    </div>
+		<div data-role="content">
+			<div data-role="fieldcontain">
+				<label for="cantidad">Cantidad de numeros a Generar:</label>
+				<input type="text" id="cantidad" name="cantidad" />
+				<label for="intervalos">Intervalos:</label>
+				<input type="number" id="intervalos" name="intervalos"/>
+				<div data-role="button" id="generarb" data-theme="b">Generar</div>
+			</div>
+			<div id="chartContainer"></div>
+		</div><!-- end of content punto 3 -->
+		<div data-role="footer" data-theme="a"><h4>Simulacion 2013</h4></div>
+	</div>
+	<div id="puntoc" data-role="page">
+		<div data-role="header" data-theme="b"><h3>Trabajo Practico N1</h3><div data-role="navbar">
+        <ul>
+            <li><a href="#puntoa">Punto A</a></li>
+            <li><a href="#puntob">Punto B</a></li>
+            <li><a href="#puntoc">Punto C</a></li>
+        </ul>
+    	</div></div>
+		<div data-role="content">
+			<div class="ui-grid-a ui-responsive">
+				<div class="ui-block-a">
+					<div data-role="fieldcontain">
+						<label for="ac">a:</label><input type="text" name="ac" id="ac" value=""/>
+						<label for="bc" class="b">b:</label><input type="text" name="bc" id="bc" value=""/>
+					</div>
+				</div>
+				<div class="ui-block-b">
+					<div data-role="fieldcontain">
+						<label for="xc">Semilla:</label><input type="text" name="xc" id="xc" value=""/>
+						<label for="mc">M:</label><input type="text" name="mc" id="mc" value=""/>
+					</div>
+				</div>
+			</div>
+			<div class="ui-grid-solo">
+				<div data-role="fieldcontain">
+					<label for="cantidadc">Cantidad de numeros a Generar:</label>
+					<input type="text" id="cantidadc" name="cantidadc" />
+					<label for="intervalosc">Intervalos:</label>
+					<input type="number" id="intervalosc" name="intervalosc"/>
+					
+					<div id="generarc" data-role="button" data-theme="b">Generar</div>
+					<div id="grafico"></div>
+				</div>
+			</div>
+		</div>
+		<div data-role="footer" data-theme="a"><h4>Simulacion 2013</h4></div>
+	</div>
+	
+
+	<script type="text/javascript">
+		var x, a, m, b;
+		$("#metodos").change(function(){
+			var valor=$("#metodos").val();
+			if(valor == "multiplicativo")
+			{
+				b=0;
+				$("#b").hide();
+				$(".b").hide();
+			}
+			if(valor == "mixto")
+			{
+				$("#b").show();
+				$(".b").show();
+			}
+		});
+		$("div#generar").click(function(){
+			var valor=$("#metodos").val();
+			if(valor == "mixto")
+			{
+				b=parseInt($("#b").val());
+			}
+			a=parseInt($("#a").val());
+			x=parseInt($("#x").val());
+			m=parseInt($("#m").val());
+
+			for (var i = 0; i<20; i++)
+			{
+				rnd=generador();
+				$("#textarea").append(rnd);
+				$("#textarea").append("\n");
+			}
+			
+		});
+		$("#agregar").click(function(){
+			rnd=generador();
+			$("#textarea").append(rnd);
+			$("#textarea").append("\n");
+		});
+		//comienza el punto b que genera la cantidad indicada y genera el grafico
+		$("div#generarb").click(function(){
+			var cantidad=parseInt($("#cantidad").val());
+			var inter=parseInt($("#intervalos").val());
+			var incremento=1/inter;
+			var array=[];
+			var suma=[];
+			suma.length=inter;
+			var dataSource=[];
+			for (var i = 0; i < suma.length; i++) {
+				suma[i]=0
+			}
+
+			for (var i = 0; i < inter; i++) 
+			{
+				array.push(incremento*(i+1));
+			}
+			for (var i = 0; i < cantidad; i++) {
+				var rnd=Math.random();
+				for (var j = 0; j < array.length; j++) {
+					if(rnd < array[j] & rnd > (array[j]-incremento))
+					{
+						suma[j]++;
+						break;
+					}
+				}
+			}
+			for (var i = 0; i < array.length; i++) {
+				var elemento={};
+				elemento['intervalo']=array[i];
+				elemento['fo']=suma[i];
+				elemento['fe']=(cantidad/inter);
+				
+				dataSource.push(elemento);
+			}
+			var container="#chartContainer";
+			graficar(dataSource, container);
+		});
+		$("#generarc").click(function(){
+			
+			b=parseInt($("#bc").val());
+			a=parseInt($("#ac").val());
+			x=parseInt($("#xc").val());
+			m=parseInt($("#mc").val());
+			var cantidad=parseInt($("#cantidadc").val());
+			var inter=parseInt($("#intervalosc").val());
+			var incremento=1/inter;
+			var array=[];
+			var suma=[];
+			suma.length=inter;
+			var dataSource=[];
+
+			for (var i = 0; i < suma.length; i++) {
+				suma[i]=0
+			}
+
+			for (var i = 0; i < inter; i++) 
+			{
+				array.push(incremento*(i+1));
+			}
+			for (var i = 0; i < cantidad; i++) {
+				var rnd=generador();
+				for (var j = 0; j < array.length; j++) {
+					if(rnd < array[j] & rnd > (array[j]-incremento))
+					{
+						suma[j]++;
+						break;
+					}
+				}
+			}
+			for (var i = 0; i < array.length; i++) {
+				var elemento={};
+				elemento['intervalo']=array[i];
+				elemento['fo']=suma[i];
+				elemento['fe']=(cantidad/inter);
+				
+				dataSource.push(elemento);
+			}
+			var container="#grafico";
+			graficar(dataSource, container);
+		});
+		function graficar(dataSource, container){
+			$(container).dxChart({
+				dataSource: dataSource,
+			    commonSeriesSettings: {
+			        type: "spline",
+			        argumentField: "intervalo"
+			    },
+			    commonAxisSettings: {
+			        grid: {
+			            visible: true
+			        }
+			    },
+			    series: [
+			        { valueField: "fo", name: "Frecuencia Observada" },
+			        { valueField: "fe", name: "Frecuencia Esperada" }
+			    ],
+			    tooltip:{
+			        enabled: true
+			    },
+			    legend: {
+			        verticalAlignment: "bottom",
+			        horizontalAlignment: "center"
+			    },
+			    title: "Frecuencias",
+			    commonPaneSettings: {
+			        border:{
+			            visible: true,
+			            bottom: false
+			        }
+			    }
+			});
+		}
+		function generador()
+		{
+			var primerTermino, rnd;
+			primerTermino=((a*x)+b);
+			x=primerTermino%m;
+			return rnd=x/m;
+		}
+		</script>
+</body>
+</html>
